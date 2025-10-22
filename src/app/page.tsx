@@ -5,16 +5,46 @@ import Autocomplete from '@/components/Autocomplete';
 export default function Home() {
   const [fare, setFare] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [startText, setStartText] = useState('');
+  const [destinationText, setDestinationText] = useState('');
+  const [startSel, setStartSel] = useState<any | null>(null);
+  const [destSel, setDestSel] = useState<any | null>(null);
+  const [response, setResponse] = useState<any | null>(null);
 
-  function calculateMockFare() {
+  async function calculateFare() {
     setLoading(true);
     setFare(null);
-    // mock async calc
-    setTimeout(() => {
-      const mock = (Math.random() * 40 + 8).toFixed(2);
-      setFare(Number(mock));
+    setResponse(null);
+    try {
+      const base = process.env.NEXT_PUBLIC_API_BASE ?? '';
+      const url = base ? `${base.replace(/\/$/, '')}/calculateFare` : '/api/calculateFare';
+      const body = {
+        start: startSel?.formatted ?? startText,
+        destination: destSel?.formatted ?? destinationText,
+      };
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      const data = await res.json();
+      setResponse(data);
+      // try to parse estimatedFare into number for the small badge
+      if (data && typeof data.estimatedFare === 'string') {
+        const match = data.estimatedFare.match(/([0-9,.]+)/);
+        if (match) {
+          setFare(Number(match[1].replace(/,/g, '')));
+        }
+      }
+    } catch (err) {
+      console.error('calculateFare error', err);
+      setResponse({ error: String(err) });
+    } finally {
       setLoading(false);
-    }, 700);
+    }
   }
 
   return (
@@ -57,8 +87,9 @@ export default function Home() {
                 </label>
                 <div className="relative">
                   <Autocomplete id="start" name="start" placeholder="Enter pickup location" inputClassName={"h-12 w-full rounded-lg bg-zinc-800/50 px-4 pr-12 text-sm text-zinc-200 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"} onSelect={(item) => {
-                    console.log('start selected', item);
-                  }} />
+                    setStartSel(item);
+                    setStartText(item.formatted ?? item.display_name ?? '');
+                  }} onChange={(v) => { setStartText(v); setStartSel(null); }} />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">⌕</span>
                 </div>
               </div>
@@ -72,14 +103,15 @@ export default function Home() {
                 </label>
                 <div className="relative">
                   <Autocomplete id="destination" name="destination" placeholder="Enter drop-off location" inputClassName={"h-12 w-full rounded-lg bg-zinc-800/50 px-4 pr-12 text-sm text-zinc-200 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"} onSelect={(item) => {
-                    console.log('destination selected', item);
-                  }} />
+                    setDestSel(item);
+                    setDestinationText(item.formatted ?? item.display_name ?? '');
+                  }} onChange={(v) => { setDestinationText(v); setDestSel(null); }} />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">📍</span>
                 </div>
               </div>
 
-              <div className="sm:col-span-2 flex sm:justify-end">
-                <button type="button" onClick={calculateMockFare} className="relative inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-linear-to-b from-yellow-400 to-yellow-500 px-4 text-sm font-semibold text-black shadow-lg transition-transform duration-150 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-yellow-300">
+                <div className="sm:col-span-2 flex sm:justify-end">
+                <button type="button" onClick={calculateFare} className="relative inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-linear-to-b from-yellow-400 to-yellow-500 px-4 text-sm font-semibold text-black shadow-lg transition-transform duration-150 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-yellow-300">
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M3 6h18M7 6v12a1 1 0 001 1h8a1 1 0 001-1V6" stroke="#111827" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M9 10h6M9 14h6" stroke="#111827" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -89,12 +121,37 @@ export default function Home() {
               </div>
             </form>
 
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <p className="text-xs text-zinc-500">Estimates are indicative. Taxes and tolls excluded.</p>
-              <div className="rounded-md bg-black/60 px-3 py-2 text-sm font-semibold text-yellow-300 ring-1 ring-yellow-400/10">
-                {fare == null ? '—' : `£${fare.toFixed(2)}`}
+              <div className="flex items-center justify-end">
+                <div className="rounded-md bg-black/60 px-3 py-2 text-sm font-semibold text-yellow-300 ring-1 ring-yellow-400/10">
+                  {fare == null ? '—' : `£${fare.toFixed(2)}`}
+                </div>
               </div>
             </div>
+
+            {/* Result card */}
+            {response && (
+              <div className="mt-6 rounded-lg bg-zinc-800/60 p-4 ring-1 ring-yellow-500/10">
+                {response.error ? (
+                  <div className="text-sm text-red-400">{String(response.error)}</div>
+                ) : (
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <div className="text-sm text-zinc-400">From</div>
+                      <div className="text-base font-semibold text-zinc-100">{response.start ?? startText}</div>
+                      <div className="text-xs text-zinc-400">{response.distance ?? ''} • {response.duration ?? ''}</div>
+                    </div>
+
+                    <div className="mt-3 sm:mt-0 text-right">
+                      <div className="text-sm text-zinc-400">Estimate</div>
+                      <div className="text-2xl font-extrabold text-yellow-400">{response.estimatedFare ?? '—'}</div>
+                      {response.rate && <div className="text-xs text-zinc-400">{response.rate}</div>}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </section>
 
           <p className="mt-2 text-center text-xs text-zinc-500">For accurate pricing, call your local licensed operator.</p>

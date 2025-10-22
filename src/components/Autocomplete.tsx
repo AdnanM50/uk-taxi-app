@@ -14,12 +14,13 @@ type Props = {
   placeholder?: string;
   apiUrl?: string; // e.g. '/addressAutocomplete' or full URL
   onSelect?: (item: Suggestion) => void;
+  onChange?: (value: string) => void;
   inputClassName?: string;
 };
 
 const PUBLIC_BASE = typeof process !== 'undefined' ? (process.env.NEXT_PUBLIC_API_BASE ?? '') : '';
 
-export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, inputClassName = '' }: Props) {
+export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, onChange, inputClassName = '' }: Props) {
   const defaultUrl = apiUrl ?? (PUBLIC_BASE ? `${PUBLIC_BASE.replace(/\/$/, '')}/addressAutocomplete` : '/addressAutocomplete');
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -120,7 +121,7 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
         id={id}
         name={name}
         value={value}
-        onChange={(e) => { setValue(e.target.value); }}
+        onChange={(e) => { setValue(e.target.value); if (onChange) onChange(e.target.value); }}
         onKeyDown={handleKeyDown}
         onFocus={() => { if (suggestions.length) setOpen(true); }}
         placeholder={placeholder}
