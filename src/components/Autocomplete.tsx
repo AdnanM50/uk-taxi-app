@@ -63,8 +63,8 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
       abortRef.current = new AbortController();
       const signal = abortRef.current.signal;
 
-  const q = encodeURIComponent(value);
-  const url = defaultUrl.includes('?') ? `${defaultUrl}&text=${q}` : `${defaultUrl}?text=${q}`;
+      const q = encodeURIComponent(value);
+      const url = defaultUrl.includes('?') ? `${defaultUrl}&text=${q}` : `${defaultUrl}?text=${q}`;
 
       fetch(url, { signal })
         .then(async (res) => {
@@ -80,7 +80,7 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
             setOpen(false);
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           if (err.name === 'AbortError') return;
           console.error('Autocomplete fetch error', err);
           setSuggestions([]);
@@ -96,12 +96,12 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
   }, [value, apiUrl]);
 
   function handleSelect(item: Suggestion) {
-    setValue(item.formatted ?? (item as any).display_name ?? String(item));
+    const selected = item.formatted ?? (item as any).display_name ?? String(item);
+    setValue(selected);
     setOpen(false);
     setSuggestions([]);
     setActiveIndex(-1);
     // remember the selected value briefly so the effect won't re-query it immediately
-    const selected = item.formatted ?? (item as any).display_name ?? String(item);
     lastSelectedRef.current = selected;
     window.setTimeout(() => { lastSelectedRef.current = null; }, 700);
     if (onSelect) onSelect(item);
@@ -143,26 +143,26 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
       />
 
       {open && (
-        <ul role="listbox" className="absolute left-0 right-0 z-50 mt-1 max-h-56 overflow-auto rounded-md bg-zinc-800/90 ring-1 ring-black/40">
+  <ul role="listbox" className="absolute left-0 right-0 z-50 mt-1 max-h-56 overflow-auto rounded-lg bg-white ring-1 ring-gray-100 shadow-2xl">
           {loading && (
-            <li className="px-3 py-2 text-sm text-zinc-400">Loading…</li>
+            <li className="px-3 py-2 text-sm text-gray-500">Loading…</li>
           )}
           {!loading && suggestions.length === 0 && (
-            <li className="px-3 py-2 text-sm text-zinc-400">No results</li>
+            <li className="px-3 py-2 text-sm text-gray-500">No results</li>
           )}
           {suggestions.map((s, idx) => (
             <li
-              key={idx}
+              key={s.place_id ?? s.osm_id ?? idx}
               role="option"
               aria-selected={activeIndex === idx}
               onMouseDown={(e) => { e.preventDefault(); handleSelect(s); }}
               onMouseEnter={() => setActiveIndex(idx)}
-              className={`cursor-pointer px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-700/60 ${activeIndex === idx ? 'bg-zinc-700/60' : ''}`}
+              className={`cursor-pointer px-3 py-2 text-sm text-gray-900 hover:bg-gray-50 ${activeIndex === idx ? 'bg-gray-50' : ''} transition-colors`}
             >
-              <div className="truncate">{s.formatted ?? (s as any).display_name ?? JSON.stringify(s)}</div>
+              <div className="truncate">{s.formatted ?? (s as any).display_name ?? s.name}</div>
               {/* optional small meta line */}
               {(s.country || s.city) && (
-                <div className="mt-0.5 text-xs text-zinc-400">
+                <div className="mt-0.5 text-xs text-gray-500">
                   {s.city ? `${s.city}${s.state ? ', ' + s.state : ''}` : ''}{s.country ? ` ${s.country}` : ''}
                 </div>
               )}
