@@ -208,11 +208,11 @@ export default function Home() {
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <p className="text-xs text-zinc-500">Estimates are indicative. Taxes and tolls excluded.</p>
-              <div className="flex items-center justify-end">
+              {/* <div className="flex items-center justify-end">
                 <div className="rounded-md bg-black/60 px-3 py-2 text-sm font-semibold text-yellow-300 ring-1 ring-yellow-400/10">
                   {fare == null ? '—' : `£${fare.toFixed(2)}`}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Result card */}

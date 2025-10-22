@@ -31,6 +31,7 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<number | null>(null);
+  const lastSelectedRef = useRef<string | null>(null);
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -44,6 +45,11 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
   }, []);
 
   useEffect(() => {
+    // if the user just selected this value, skip fetching again (prevents dropdown re-opening)
+    if (lastSelectedRef.current && value && lastSelectedRef.current === value) {
+      return;
+    }
+
     if (!value || value.length < 2) {
       setSuggestions([]);
       setOpen(false);
@@ -94,6 +100,10 @@ export default function Autocomplete({ id, name, placeholder, apiUrl, onSelect, 
     setOpen(false);
     setSuggestions([]);
     setActiveIndex(-1);
+    // remember the selected value briefly so the effect won't re-query it immediately
+    const selected = item.formatted ?? (item as any).display_name ?? String(item);
+    lastSelectedRef.current = selected;
+    window.setTimeout(() => { lastSelectedRef.current = null; }, 700);
     if (onSelect) onSelect(item);
   }
 
