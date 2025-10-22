@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Autocomplete from '@/components/Autocomplete';
+import RouteMap from '@/components/RouteMap';
 
 export default function Home() {
   const [fare, setFare] = useState<number | null>(null);
@@ -10,6 +11,9 @@ export default function Home() {
   const [startSel, setStartSel] = useState<any | null>(null);
   const [destSel, setDestSel] = useState<any | null>(null);
   const [response, setResponse] = useState<any | null>(null);
+  const [routeData, setRouteData] = useState<any | null>(null);
+  const [routeError, setRouteError] = useState<string | null>(null);
+  const [isScotland, setIsScotland] = useState<boolean>(false);
 
   async function calculateFare() {
     setLoading(true);
@@ -32,12 +36,93 @@ export default function Home() {
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       setResponse(data);
+      // optionally attempt to fetch route info if we have coordinates
+      // we won't block the UI — call getRouteInfo in background
+      (async () => {
+        setRouteError(null);
+        try {
+          const base = process.env.NEXT_PUBLIC_API_BASE ?? '';
+          const routeUrl = base ? `${base.replace(/\/$/, '')}/getRouteInfo` : '/api/getRouteInfo';
+          // prefer waypoints lat/lon if present in data
+          const waypoints = data?.properties?.waypoints ?? data?.data?.properties?.waypoints ?? null;
+          let body: any = {};
+          if (Array.isArray(waypoints) && waypoints.length >= 2) {
+            body = {
+              start: { lat: waypoints[0].lat ?? waypoints[0]?.location?.[1], lon: waypoints[0].lon ?? waypoints[0]?.location?.[0] },
+              end: { lat: waypoints[waypoints.length - 1].lat ?? waypoints[waypoints.length - 1]?.location?.[1], lon: waypoints[waypoints.length - 1].lon ?? waypoints[waypoints.length - 1]?.location?.[0] },
+            };
+          } else if (startSel?.lat && destSel?.lat) {
+            body = { start: { lat: startSel.lat, lon: startSel.lon }, end: { lat: destSel.lat, lon: destSel.lon } };
+          } else {
+            body = { start: data?.start, end: data?.destination };
+          }
+
+          // debug: log route URL and body so we can inspect requests in console
+          console.debug('getRouteInfo ->', { routeUrl, body });
+          const rres = await fetch(routeUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+          if (!rres.ok) {
+            // read text body for debugging and surface the message
+            let txt = '';
+            try {
+              txt = await rres.text();
+            } catch (e) {
+              txt = String(e);
+            }
+            console.error('Route fetch failed', rres.status, txt);
+            setRouteError(`Route fetch failed: ${rres.status} ${txt}`);
+            return;
+          }
+          console.debug('getRouteInfo response ok', rres.status);
+          const rdata = await rres.json();
+          // expect rdata.data as geojson-like
+          setRouteData(rdata?.data ?? rdata);
+          setRouteError(null);
+        } catch (e) {
+          console.error('getRouteInfo failed', e);
+          setRouteError(String(e));
+        }
+      })();
       // try to parse estimatedFare into number for the small badge
       if (data && typeof data.estimatedFare === 'string') {
         const match = data.estimatedFare.match(/([0-9,.]+)/);
         if (match) {
           setFare(Number(match[1].replace(/,/g, '')));
         }
+      }
+      // detect Scotland from selected items or response fields (require BOTH start & dest in Scotland)
+      try {
+        const norm = (v: any) => (typeof v === 'string' ? v : (v == null ? '' : String(v)));
+        const looksLikeScotland = (v: any) => {
+          const s = norm(v).toLowerCase();
+          return /scotland|\bsct\b/.test(s);
+        };
+
+        const extractCandidates = (obj: any) => {
+          if (!obj) return [] as string[];
+          return [obj.formatted, obj.display_name, obj.state, obj.country, obj.county, obj.region, obj.label, obj.name].map(norm).filter(Boolean) as string[];
+        };
+
+        const startCandidates = [
+          ...extractCandidates(startSel),
+          startText,
+          response?.start,
+          data?.start,
+          data?.properties?.waypoints?.[0]?.location?.join ? data?.properties?.waypoints?.[0]?.location.join(',') : '',
+        ];
+        const destCandidates = [
+          ...extractCandidates(destSel),
+          destinationText,
+          response?.destination,
+          data?.destination,
+          data?.properties?.waypoints?.[1]?.location?.join ? data?.properties?.waypoints?.[1]?.location.join(',') : '',
+        ];
+
+  const startIsScot = startCandidates.some((c) => looksLikeScotland(c));
+  const destIsScot = destCandidates.some((c) => looksLikeScotland(c));
+  console.debug('Scotland detection candidates', { startCandidates, destCandidates, startIsScot, destIsScot });
+        setIsScotland(Boolean(startIsScot && destIsScot));
+      } catch (e) {
+        // ignore detection errors
       }
     } catch (err) {
       console.error('calculateFare error', err);
@@ -150,6 +235,24 @@ export default function Home() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {isScotland && (
+              <div className="mt-4 flex justify-center">
+                <a href="https://www.dastaxis.co.uk/booking/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:brightness-95">
+                  Book Now
+                </a>
+              </div>
+            )}
+
+            {/* Route map: show only the map if routeData exists */}
+            {routeError && (
+              <div className="mt-4 rounded-md bg-red-900/30 p-3 text-sm text-red-300">{routeError}</div>
+            )}
+            {routeData && (
+              <div className="mt-6">
+                <RouteMap data={routeData} />
               </div>
             )}
           </section>
