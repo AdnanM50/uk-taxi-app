@@ -191,7 +191,6 @@ export default function Home() {
       <main className="w-full max-w-4xl px-4 sm:px-6 py-10 sm:py-20">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-6">
           <header className="text-center">
-            {/* inline SVG taxi mark for crispness */}
             <div className="mb-3 inline-flex items-center justify-center rounded-full bg-transparent p-1">
               <Image src="/Das-Taxis-Logo-scaled.png" alt="Taxi mark" width={64} height={64} />
             </div>
@@ -208,9 +207,10 @@ export default function Home() {
           <section className="w-full max-w-3xl mx-auto rounded-3xl bg-white sm:p-8 p-4 shadow-2xl ring-1 ring-gray-100">
             <form className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
               <div className="sm:col-span-5">
-                <label htmlFor="start" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-300">
+                <label htmlFor="start" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-600">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <path d="M12 2C8 2 5 5.5 5 9.2c0 5.2 7 12 7 12s7-6.8 7-12C19 5.5 16 2 12 2z" fill="#FBBF24" />
+                    <path d="M12 2C8 2 5 5.5 5 9.2c0 4.5 6.5 10.8 6.8 11.1a1 1 0 0 0 1.4 0C12.5 20 19 13.7 19 9.2 19 5.5 16 2 12 2z" fill="#b45309" />
+                    <circle cx="12" cy="9" r="2.2" fill="#fff" />
                   </svg>
                   Start Address
                 </label>
@@ -225,9 +225,10 @@ export default function Home() {
               </div>
 
               <div className="sm:col-span-5">
-                <label htmlFor="destination" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-300">
+                <label htmlFor="destination" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-600">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <path d="M12 2a5 5 0 00-5 5c0 3.3 5 9 5 9s5-5.7 5-9a5 5 0 00-5-5z" fill="#F59E0B" />
+                    <path d="M12 2C8 2 5 5.5 5 9.2c0 4.5 6.5 10.8 6.8 11.1a1 1 0 0 0 1.4 0C12.5 20 19 13.7 19 9.2 19 5.5 16 2 12 2z" fill="#b45309" />
+                    <circle cx="12" cy="9" r="2.2" fill="#fff" />
                   </svg>
                   Destination Address
                 </label>
