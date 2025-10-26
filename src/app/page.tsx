@@ -396,10 +396,12 @@ export default function Home() {
                             <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                           </svg>
                         </div>
-                        <span className="text-xs sm:text-sm font-bold text-yellow-700 uppercase tracking-wide">Pricing Information</span>
+                        <span className="text-xs sm:text-sm font-bold text-yellow-700 uppercase tracking-wide">Book Your Ride with Das Taxis</span>
                       </div>
                       <div className="text-gray-700 text-xs sm:text-sm leading-relaxed bg-white/60 p-2 sm:p-3 lg:p-4 rounded-md sm:rounded-lg border border-yellow-200/50">
-                        Please note that the calculated taxi fares are always only estimates based on distance, travel time and the respective taxi fare. The calculated fares are not binding and are for information purposes only.
+                        {/* Please note that the calculated taxi fares are always only estimates based on distance, travel time and the respective taxi fare. The calculated fares are not binding and are for information purposes only. */}
+                        
+Secure your fare today and enjoy reliable service with professional drivers. No surge pricing, no surprises—just comfortable, stress-free travel across the SCT.
                       </div>
                     </div>
                   </div>
@@ -409,7 +411,9 @@ export default function Home() {
 
             {isScotland && (
               <div className="mt-4 flex justify-center w-full">
-                <button onClick={handleBookingClick} className="inline-flex w-full justify-center items-center gap-2 rounded-md bg-yellow-500 px-4 py-3 text-base font-semibold text-black hover:brightness-95 transition-all duration-200 hover:scale-105">
+                <button 
+                // onClick={handleBookingClick}
+                 className="inline-flex w-full justify-center items-center gap-2 rounded-md bg-yellow-500 px-4 py-3 text-base font-semibold text-black hover:brightness-95 transition-all duration-200 hover:scale-105">
                   Book Now
                 </button>
               </div>
@@ -457,7 +461,7 @@ export default function Home() {
       )}
 
       {/* Booking Dialog - COMMENTED OUT */}
-      {showBookingDialog && (
+      {/* {showBookingDialog && (
         <div 
           className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           style={{ zIndex: 9999 }}
@@ -511,7 +515,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
