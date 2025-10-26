@@ -408,8 +408,8 @@ export default function Home() {
             )}
 
             {isScotland && (
-              <div className="mt-4 flex justify-center">
-                <button onClick={handleBookingClick} className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:brightness-95 transition-all duration-200 hover:scale-105">
+              <div className="mt-4 flex justify-center w-full">
+                <button onClick={handleBookingClick} className="inline-flex w-full justify-center items-center gap-2 rounded-md bg-yellow-500 px-4 py-3 text-base font-semibold text-black hover:brightness-95 transition-all duration-200 hover:scale-105">
                   Book Now
                 </button>
               </div>
