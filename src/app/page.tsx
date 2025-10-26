@@ -28,7 +28,7 @@ export default function Home() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  // Handle booking dialog
+ // Handle booking dialog
   const handleBookingClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowBookingDialog(true);
@@ -234,9 +234,9 @@ export default function Home() {
             </p>
           </header>
 
-          <section className="w-full max-w-3xl mx-auto rounded-3xl bg-white sm:p-8 p-4 shadow-2xl ring-1 ring-gray-100 transform transition-all duration-300 hover:shadow-3xl">
+          <section className="w-full max-w-4xl mx-auto rounded-3xl bg-white sm:p-8 p-4 shadow-2xl ring-1 ring-gray-100 transform transition-all duration-300 hover:shadow-3xl">
             <form className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
-              <div className="sm:col-span-5">
+              <div className="sm:col-span-4">
                 <label htmlFor="start" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-600">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M12 2C8 2 5 5.5 5 9.2c0 4.5 6.5 10.8 6.8 11.1a1 1 0 0 0 1.4 0C12.5 20 19 13.7 19 9.2 19 5.5 16 2 12 2z" fill="#b45309" />
@@ -254,7 +254,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="sm:col-span-5">
+              <div className="sm:col-span-4">
                 <label htmlFor="destination" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-600">
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M12 2C8 2 5 5.5 5 9.2c0 4.5 6.5 10.8 6.8 11.1a1 1 0 0 0 1.4 0C12.5 20 19 13.7 19 9.2 19 5.5 16 2 12 2z" fill="#b45309" />
@@ -272,13 +272,13 @@ export default function Home() {
                 </div>
               </div>
 
-                <div className="sm:col-span-2 item-center flex sm:justify-end">
-                <button type="button" onClick={calculateFare} className="relative inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-yellow-400 via-yellow-500 to-yellow-600 px-6 text-sm font-bold text-black shadow-2xl transform transition-all duration-200 hover:scale-105 hover:shadow-3xl active:scale-100 focus:outline-none focus:ring-4 focus:ring-yellow-300 hover:from-yellow-500 hover:via-yellow-600 hover:to-yellow-700">
+                <div className="sm:col-span-4 item-center flex sm:justify-end">
+                <button type="button" onClick={calculateFare} className="relative inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 px-4 sm:px-6 text-sm font-bold text-black shadow-2xl transform transition-all duration-200 hover:scale-105 hover:shadow-3xl active:scale-100 focus:outline-none focus:ring-4 focus:ring-yellow-300 hover:from-yellow-500 hover:via-yellow-600 hover:to-yellow-700 whitespace-nowrap">
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M3 6h18M7 6v12a1 1 0 001 1h8a1 1 0 001-1V6" stroke="#111827" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M9 10h6M9 14h6" stroke="#111827" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  {loading ? 'Calculating...' : 'Calculate'}
+                  {loading ? 'Calculating...' : 'Get My Fare Estimate'}
                 </button>
               </div>
             </form>
@@ -287,35 +287,120 @@ export default function Home() {
               <p className="text-xs text-gray-600">Estimates are indicative. Taxes and tolls excluded.</p>
             </div>
 
-            {/* Result card */}
+            {/* Result card - Enhanced Modern Design with 3-Device Responsive */}
             {response && (
-              <div className="mt-6 rounded-xl bg-linear-to-br from-white to-yellow-50 p-6 ring-2 ring-yellow-200 shadow-xl transform transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+              <div className="mt-4 sm:mt-6 lg:mt-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-white via-yellow-50/30 to-orange-50/20 p-4 sm:p-6 lg:p-8 ring-1 ring-yellow-200/50 shadow-xl sm:shadow-2xl backdrop-blur-sm transform transition-all duration-500 hover:shadow-2xl sm:hover:shadow-3xl hover:scale-[1.005] sm:hover:scale-[1.01] hover:ring-yellow-300/60">
                 {response.error ? (
-                  <div className="text-sm text-red-500">{String(response.error)}</div>
+                  <div className="text-xs sm:text-sm text-red-500 bg-red-50 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-red-200">{String(response.error)}</div>
                 ) : (
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="space-y-2">
-                      <div className="text-sm font-medium text-yellow-600 uppercase tracking-wide">From</div>
-                      <div className="text-lg font-bold text-gray-900 bg-white/60 px-3 py-2 rounded-lg border border-yellow-200">{response.start ?? startText}</div>
-                      <div className="text-sm  font-black bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm px-3 py-1 rounded-full inline-block">
-                        {response.distance === '0.00 miles' || response.distance === '0 miles' || !response.distance ? 
-                          'Same Location' : 
-                          `${response.distance ?? ''} • ${response.duration ?? ''}`
-                        }
+                  <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+                  
+
+                    {/* Enhanced Location cards - Mobile First Responsive */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+                      {/* Pickup Location */}
+                      <div className="group bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-yellow-200/50 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:border-yellow-300/70 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
+                          <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-md sm:rounded-lg shadow-sm sm:shadow-md">
+                            <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2C8 2 5 5.5 5 9.2c0 4.5 6.5 10.8 6.8 11.1a1 1 0 0 0 1.4 0C12.5 20 19 13.7 19 9.2 19 5.5 16 2 12 2z" fill="currentColor" />
+                              <circle cx="12" cy="9" r="2.2" fill="#fff" />
+                            </svg>
+                          </div>
+                          <span className="text-xs sm:text-sm font-bold text-yellow-700 uppercase tracking-wide">Pickup Location</span>
+                        </div>
+                        <div className="text-gray-800 text-xs sm:text-sm font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
+                          {response.start ?? startText}
+                        </div>
+                      </div>
+
+                      {/* Drop-off Location */}
+                      <div className="group bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-yellow-200/50 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:border-yellow-300/70 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
+                          <div className="p-1.5 sm:p-2 bg-gradient-to-br from-green-400 to-green-500 rounded-md sm:rounded-lg shadow-sm sm:shadow-md">
+                            <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" fill="currentColor" />
+                              <circle cx="12" cy="10" r="3" fill="#fff" />
+                            </svg>
+                          </div>
+                          <span className="text-xs sm:text-sm font-bold text-green-700 uppercase tracking-wide">Drop-off Location</span>
+                        </div>
+                        <div className="text-gray-800 text-xs sm:text-sm font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
+                          {response.destination ?? destinationText}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 sm:mt-0 text-right space-y-2">
-                      <div className="text-sm font-medium text-yellow-600 uppercase tracking-wide">Estimate</div>
-                      <div className="text-4xl font-black bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm">
-                        {response.estimatedFare === '£0.00' || response.estimatedFare === '£0' || !response.estimatedFare ? 
-                          'Same Location' : 
-                          response.estimatedFare ?? '—'
-                        }
+                    {/* Enhanced Info boxes - Responsive Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+                      {/* Distance */}
+                      <div className="group bg-white/90 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-blue-200/50 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:border-blue-300/70 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
+                          <div className="p-2 sm:p-3 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg sm:rounded-xl shadow-sm sm:shadow-md group-hover:scale-105 sm:group-hover:scale-110 transition-transform duration-300">
+                            <svg className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                              <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
+                          </div>
+                          <span className="text-xs sm:text-sm font-bold text-blue-700 uppercase tracking-wide">Distance</span>
+                        </div>
+                        <div className="text-gray-800 text-lg sm:text-xl lg:text-2xl font-black bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                          {response.distance === '0.00 miles' || response.distance === '0 miles' || !response.distance ? 
+                            'Same Location' : 
+                            response.distance ?? '—'
+                          }
+                        </div>
                       </div>
-                      {response.rate && response.estimatedFare !== '£0.00' && response.estimatedFare !== '£0' && (
-                        <div className="text-sm  font-black bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm px-3 py-1 rounded-full inline-block">{response.rate}</div>
-                      )}
+
+                      {/* Duration */}
+                      <div className="group bg-white/90 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-purple-200/50 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:border-purple-300/70 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
+                          <div className="p-2 sm:p-3 bg-gradient-to-br from-purple-400 to-purple-500 rounded-lg sm:rounded-xl shadow-sm sm:shadow-md group-hover:scale-105 sm:group-hover:scale-110 transition-transform duration-300">
+                            <svg className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                              <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
+                          </div>
+                          <span className="text-xs sm:text-sm font-bold text-purple-700 uppercase tracking-wide">Duration</span>
+                        </div>
+                        <div className="text-gray-800 text-lg sm:text-xl lg:text-2xl font-black bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+                          {response.duration ?? '—'}
+                        </div>
+                      </div>
+
+                      {/* Estimated Fare - Enhanced yellow box with glow - Full width on mobile */}
+                      <div className="group relative bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl shadow-xl sm:shadow-2xl hover:shadow-2xl sm:hover:shadow-3xl transition-all duration-300 hover:scale-102 sm:hover:scale-105 sm:col-span-2 lg:col-span-1">
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-300/20 to-orange-400/20 rounded-lg sm:rounded-xl blur-sm"></div>
+                        <div className="relative">
+                          <div className="text-xs sm:text-sm font-bold text-black/80 mb-1 sm:mb-2 uppercase tracking-wide">Estimated Fare</div>
+                          <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-black drop-shadow-sm">
+                            {response.estimatedFare === '£0.00' || response.estimatedFare === '£0' || !response.estimatedFare ? 
+                              'Same Location' : 
+                              response.estimatedFare ?? '—'
+                            }
+                          </div>
+                          <div className="mt-1 sm:mt-2 text-xs text-black/60 font-medium">
+                            {response.rate && response.estimatedFare !== '£0.00' && response.estimatedFare !== '£0' && response.rate}
+                          </div>
+                        </div>
+                        <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-2 h-2 sm:w-3 sm:h-3 bg-white/40 rounded-full animate-ping"></div>
+                      </div>
+                    </div>
+
+                    {/* Enhanced Pricing Information - Responsive */}
+                    <div className="relative bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300/50 p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl shadow-md sm:shadow-lg">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
+                        <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-md sm:rounded-lg shadow-sm sm:shadow-md">
+                          <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                            <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                        </div>
+                        <span className="text-xs sm:text-sm font-bold text-yellow-700 uppercase tracking-wide">Pricing Information</span>
+                      </div>
+                      <div className="text-gray-700 text-xs sm:text-sm leading-relaxed bg-white/60 p-2 sm:p-3 lg:p-4 rounded-md sm:rounded-lg border border-yellow-200/50">
+                        Please note that the calculated taxi fares are always only estimates based on distance, travel time and the respective taxi fare. The calculated fares are not binding and are for information purposes only.
+                      </div>
                     </div>
                   </div>
                 )}
@@ -371,7 +456,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Booking Dialog */}
+      {/* Booking Dialog - COMMENTED OUT */}
       {showBookingDialog && (
         <div 
           className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
@@ -383,19 +468,16 @@ export default function Home() {
           }}
         >
           <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-2xl transform transition-all duration-300 scale-100 overflow-hidden max-h-[90vh] overflow-y-auto">
-            {/* Dialog Header */}
             <div className="px-6 py-5 border-b border-gray-200 bg-linear-to-r from-yellow-50 to-yellow-100">
-              <h3 className="text-xl font-bold text-gray-900 text-center">🚕 Book Your Taxi</h3>
+              <h3 className="text-xl font-bold text-gray-900 text-center">🚕 Book Your Ride with Das Taxis</h3>
             </div>
 
-            {/* Dialog Content */}
             <div className="px-6 py-6 bg-white">
               <div className="text-center space-y-5">
                 <div className="text-base text-gray-700 font-medium">
-                  If you want to go to these destinations, you can book by this website:
+                  Secure your fare today and enjoy reliable service with professional drivers. No surge pricing, no surprises—just comfortable, stress-free travel across the SCT.
                 </div>
                 
-                {/* Highlighted destinations */}
                 <div className="bg-linear-to-r from-yellow-100 to-yellow-200 rounded-xl p-5 border-2 border-yellow-400 shadow-lg">
                   <div className="text-base font-bold text-yellow-900 mb-3">📍 Your Journey:</div>
                   <div className="text-sm font-bold text-gray-800 mb-2 bg-white/80 px-3 py-2 rounded-lg">
@@ -413,7 +495,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Dialog Buttons */}
             <div className="px-6 py-5 border-t border-gray-200 bg-gray-50 flex gap-4">
               <button
                 onClick={handleDialogCancel}
