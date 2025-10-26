@@ -60,13 +60,13 @@ export default function RouteMap({ data }: { data: GeoFeatureCollection }) {
       });
 
       if (coords.length) {
-        const poly = L.polyline(coords, { color: '#f6c945', weight: 5 }).addTo(map);
+        const poly = L.polyline(coords, { color: '#3b82f6', weight: 6, opacity: 0.9 }).addTo(map);
         map.fitBounds(poly.getBounds(), { padding: [40, 40] });
       }
 
       // waypoints in properties
       const waypoints = features[0]?.properties?.waypoints ?? data?.properties?.waypoints ?? [];
-      if (Array.isArray(waypoints)) {
+      if (Array.isArray(waypoints) && waypoints.length > 0) {
         waypoints.forEach((wp: any, idx: number) => {
           const lat = wp.location?.[1] ?? wp.lat ?? wp[1];
           const lon = wp.location?.[0] ?? wp.lon ?? wp[0];
@@ -75,6 +75,30 @@ export default function RouteMap({ data }: { data: GeoFeatureCollection }) {
           const label = wp.name ?? wp.label ?? wp.display_name ?? wp.formatted ?? (idx === 0 ? 'Start' : (idx === waypoints.length - 1 ? 'Destination' : String(idx + 1)));
           marker.bindTooltip(String(label), { permanent: true, className: 'route-marker-label', offset: [0, 0] });
         });
+      } else {
+        // Fallback: try to extract coordinates from the data structure
+        const startCoords = data?.start?.lat && data?.start?.lon ? [data.start.lat, data.start.lon] : null;
+        const destCoords = data?.destination?.lat && data?.destination?.lon ? [data.destination.lat, data.destination.lon] : null;
+        
+        if (startCoords) {
+          const startMarker = L.circleMarker(startCoords, { radius: 6, color: '#ef4444', weight: 2, fillColor: '#fff', fillOpacity: 1 }).addTo(map);
+          startMarker.bindTooltip('Start', { permanent: true, className: 'route-marker-label', offset: [0, 0] });
+        }
+        
+        if (destCoords) {
+          const destMarker = L.circleMarker(destCoords, { radius: 6, color: '#10b981', weight: 2, fillColor: '#fff', fillOpacity: 1 }).addTo(map);
+          destMarker.bindTooltip('Destination', { permanent: true, className: 'route-marker-label', offset: [0, 0] });
+        }
+        
+        // If we have both start and destination coordinates, fit the map to show both
+        if (startCoords && destCoords) {
+          const group = new L.featureGroup([L.marker(startCoords), L.marker(destCoords)]);
+          map.fitBounds(group.getBounds().pad(0.1));
+        } else if (startCoords) {
+          map.setView(startCoords, 13);
+        } else if (destCoords) {
+          map.setView(destCoords, 13);
+        }
       }
     }
 
@@ -102,7 +126,7 @@ export default function RouteMap({ data }: { data: GeoFeatureCollection }) {
   }, [data]);
 
   return (
-    <div className="w-full h-[360px] rounded-md overflow-hidden shadow-lg">
+    <div className="w-full h-[400px] rounded-xl overflow-hidden shadow-2xl ring-2 ring-blue-200 transform transition-all duration-300 z-0 hover:shadow-3xl">
       <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
     </div>
   );

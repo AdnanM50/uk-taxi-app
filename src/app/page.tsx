@@ -19,6 +19,7 @@ export default function Home() {
   const [toast, setToast] = useState<string | null>(null);
   const [startError, setStartError] = useState(false);
   const [destError, setDestError] = useState(false);
+  const [showBookingDialog, setShowBookingDialog] = useState(false);
 
   // auto-dismiss toast after a short delay
   useEffect(() => {
@@ -26,6 +27,35 @@ export default function Home() {
     const t = setTimeout(() => setToast(null), 3000);
     return () => clearTimeout(t);
   }, [toast]);
+
+  // Handle booking dialog
+  const handleBookingClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowBookingDialog(true);
+  };
+
+  const handleDialogCancel = () => {
+    setShowBookingDialog(false);
+  };
+
+  const handleDialogConfirm = () => {
+    window.open('https://www.dastaxis.co.uk/booking/', '_blank', 'noopener,noreferrer');
+    setShowBookingDialog(false);
+  };
+
+  // Handle escape key to close dialog
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showBookingDialog) {
+        setShowBookingDialog(false);
+      }
+    };
+    
+    if (showBookingDialog) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [showBookingDialog]);
 
   // small DOM cleanup: remove stray single-character leaf nodes that are just a hyphen
   useEffect(() => {
@@ -204,7 +234,7 @@ export default function Home() {
             </p>
           </header>
 
-          <section className="w-full max-w-3xl mx-auto rounded-3xl bg-white sm:p-8 p-4 shadow-2xl ring-1 ring-gray-100">
+          <section className="w-full max-w-3xl mx-auto rounded-3xl bg-white sm:p-8 p-4 shadow-2xl ring-1 ring-gray-100 transform transition-all duration-300 hover:shadow-3xl">
             <form className="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
               <div className="sm:col-span-5">
                 <label htmlFor="start" className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-yellow-600">
@@ -215,7 +245,7 @@ export default function Home() {
                   Start Address
                 </label>
                 <div className="relative">
-                  <Autocomplete id="start" name="start" placeholder="Enter pickup location" inputClassName={"h-14 w-full rounded-lg bg-gray-50 px-4 pr-12 text-sm text-gray-900 placeholder:text-gray-400 border " + (startError ? 'border-red-400 ring-1 ring-red-100' : 'border-gray-200') + " focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-shadow"} onSelect={(item) => {
+                  <Autocomplete id="start" name="start" placeholder="Enter pickup location" inputClassName={"h-14 w-full rounded-xl bg-linear-to-r from-gray-50 to-yellow-50 px-4 pr-12 text-sm text-gray-900 placeholder:text-gray-400 border-2 " + (startError ? 'border-red-400 ring-2 ring-red-100' : 'border-yellow-200') + " focus:outline-none focus:ring-4 focus:ring-yellow-300 focus:border-yellow-400 transition-all duration-200 shadow-sm hover:shadow-md"} onSelect={(item) => {
                     setStartSel(item);
                     setStartText(item.formatted ?? item.display_name ?? '');
                     setStartError(false);
@@ -233,7 +263,7 @@ export default function Home() {
                   Destination Address
                 </label>
                 <div className="relative">
-                  <Autocomplete id="destination" name="destination" placeholder="Enter drop-off location" inputClassName={"h-14 w-full rounded-lg bg-gray-50 px-4 pr-12 text-sm text-gray-900 placeholder:text-gray-400 border " + (destError ? 'border-red-400 ring-1 ring-red-100' : 'border-gray-200') + " focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-shadow"} onSelect={(item) => {
+                  <Autocomplete id="destination" name="destination" placeholder="Enter drop-off location" inputClassName={"h-14 w-full rounded-xl bg-linear-to-r from-gray-50 to-yellow-50 px-4 pr-12 text-sm text-gray-900 placeholder:text-gray-400 border-2 " + (destError ? 'border-red-400 ring-2 ring-red-100' : 'border-yellow-200') + " focus:outline-none focus:ring-4 focus:ring-yellow-300 focus:border-yellow-400 transition-all duration-200 shadow-sm hover:shadow-md"} onSelect={(item) => {
                     setDestSel(item);
                     setDestinationText(item.formatted ?? item.display_name ?? '');
                     setDestError(false);
@@ -243,7 +273,7 @@ export default function Home() {
               </div>
 
                 <div className="sm:col-span-2 item-center flex sm:justify-end">
-                <button type="button" onClick={calculateFare} className="relative inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-yellow-400 to-yellow-500 px-6 text-sm font-semibold text-black shadow-2xl transform transition duration-150 hover:scale-105 active:scale-100 focus:outline-none focus:ring-4 focus:ring-yellow-200">
+                <button type="button" onClick={calculateFare} className="relative inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-yellow-400 via-yellow-500 to-yellow-600 px-6 text-sm font-bold text-black shadow-2xl transform transition-all duration-200 hover:scale-105 hover:shadow-3xl active:scale-100 focus:outline-none focus:ring-4 focus:ring-yellow-300 hover:from-yellow-500 hover:via-yellow-600 hover:to-yellow-700">
                   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                     <path d="M3 6h18M7 6v12a1 1 0 001 1h8a1 1 0 001-1V6" stroke="#111827" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M9 10h6M9 14h6" stroke="#111827" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -259,21 +289,33 @@ export default function Home() {
 
             {/* Result card */}
             {response && (
-              <div className="mt-6 rounded-lg bg-white p-4 ring-1 ring-gray-100 shadow-sm">
+              <div className="mt-6 rounded-xl bg-linear-to-br from-white to-yellow-50 p-6 ring-2 ring-yellow-200 shadow-xl transform transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
                 {response.error ? (
                   <div className="text-sm text-red-500">{String(response.error)}</div>
                 ) : (
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="text-sm text-gray-500">From</div>
-                      <div className="text-base font-semibold text-gray-900">{response.start ?? startText}</div>
-                      <div className="text-xs text-gray-500">{response.distance ?? ''} • {response.duration ?? ''}</div>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium text-yellow-600 uppercase tracking-wide">From</div>
+                      <div className="text-lg font-bold text-gray-900 bg-white/60 px-3 py-2 rounded-lg border border-yellow-200">{response.start ?? startText}</div>
+                      <div className="text-sm  font-black bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm px-3 py-1 rounded-full inline-block">
+                        {response.distance === '0.00 miles' || response.distance === '0 miles' || !response.distance ? 
+                          'Same Location' : 
+                          `${response.distance ?? ''} • ${response.duration ?? ''}`
+                        }
+                      </div>
                     </div>
 
-                    <div className="mt-3 sm:mt-0 text-right">
-                      <div className="text-sm text-gray-500">Estimate</div>
-                      <div className="text-2xl font-extrabold text-yellow-700">{response.estimatedFare ?? '—'}</div>
-                      {response.rate && <div className="text-xs text-gray-500">{response.rate}</div>}
+                    <div className="mt-3 sm:mt-0 text-right space-y-2">
+                      <div className="text-sm font-medium text-yellow-600 uppercase tracking-wide">Estimate</div>
+                      <div className="text-4xl font-black bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm">
+                        {response.estimatedFare === '£0.00' || response.estimatedFare === '£0' || !response.estimatedFare ? 
+                          'Same Location' : 
+                          response.estimatedFare ?? '—'
+                        }
+                      </div>
+                      {response.rate && response.estimatedFare !== '£0.00' && response.estimatedFare !== '£0' && (
+                        <div className="text-sm  font-black bg-linear-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent drop-shadow-sm px-3 py-1 rounded-full inline-block">{response.rate}</div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -282,9 +324,9 @@ export default function Home() {
 
             {isScotland && (
               <div className="mt-4 flex justify-center">
-                <a href="https://www.dastaxis.co.uk/booking/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:brightness-95">
+                <button onClick={handleBookingClick} className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:brightness-95 transition-all duration-200 hover:scale-105">
                   Book Now
-                </a>
+                </button>
               </div>
             )}
 
@@ -314,16 +356,77 @@ export default function Home() {
       </main>
       {/* toast */}
       {toast && (
-        <div className="fixed left-1/2 bottom-10 z-50 -translate-x-1/2" role="status" aria-live="polite">
+        <div className="fixed left-1/2 bottom-10 z-100 -translate-x-1/2" role="status" aria-live="polite">
           <div className="max-w-xl w-full mx-auto px-4">
-            <div className="inline-flex w-full items-center gap-3 rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 px-4 py-3 shadow-2xl text-sm font-medium text-black transform transition-all duration-300" data-toast>
-              <svg className="h-5 w-5 flex-shrink-0 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <div className="inline-flex w-full items-center gap-3 rounded-xl bg-linear-to-r from-yellow-500 to-yellow-400 px-4 py-3 shadow-2xl text-sm font-medium text-black transform transition-all duration-300" data-toast>
+              <svg className="h-5 w-5 shrink-0 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                 <path d="M12 9v4" stroke="#111827" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M12 17h.01" stroke="#111827" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0z" stroke="#111827" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <div className="flex-1">{toast}</div>
               <button onClick={() => setToast(null)} aria-label="Dismiss" className="ml-2 rounded bg-black/10 px-2 py-1 text-xs text-black/80 hover:bg-black/20">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Booking Dialog */}
+      {showBookingDialog && (
+        <div 
+          className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          style={{ zIndex: 9999 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowBookingDialog(false);
+            }
+          }}
+        >
+          <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-2xl transform transition-all duration-300 scale-100 overflow-hidden max-h-[90vh] overflow-y-auto">
+            {/* Dialog Header */}
+            <div className="px-6 py-5 border-b border-gray-200 bg-linear-to-r from-yellow-50 to-yellow-100">
+              <h3 className="text-xl font-bold text-gray-900 text-center">🚕 Book Your Taxi</h3>
+            </div>
+
+            {/* Dialog Content */}
+            <div className="px-6 py-6 bg-white">
+              <div className="text-center space-y-5">
+                <div className="text-base text-gray-700 font-medium">
+                  If you want to go to these destinations, you can book by this website:
+                </div>
+                
+                {/* Highlighted destinations */}
+                <div className="bg-linear-to-r from-yellow-100 to-yellow-200 rounded-xl p-5 border-2 border-yellow-400 shadow-lg">
+                  <div className="text-base font-bold text-yellow-900 mb-3">📍 Your Journey:</div>
+                  <div className="text-sm font-bold text-gray-800 mb-2 bg-white/80 px-3 py-2 rounded-lg">
+                    {response?.start || startText}
+                  </div>
+                  <div className="text-lg text-yellow-600 my-2">⬇️</div>
+                  <div className="text-sm font-bold text-gray-800 bg-white/80 px-3 py-2 rounded-lg">
+                    {response?.destination || destinationText}
+                  </div>
+                </div>
+
+                <div className="text-sm text-gray-600 font-medium">
+                  Click OK to open the booking website
+                </div>
+              </div>
+            </div>
+
+            {/* Dialog Buttons */}
+            <div className="px-6 py-5 border-t border-gray-200 bg-gray-50 flex gap-4">
+              <button
+                onClick={handleDialogCancel}
+                className="flex-1 px-6 py-3 text-base font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDialogConfirm}
+                className="flex-1 px-6 py-3 text-base font-semibold text-white bg-linear-to-r from-yellow-500 to-yellow-600 rounded-xl hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+              >
+                OK
+              </button>
             </div>
           </div>
         </div>
