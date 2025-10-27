@@ -302,9 +302,11 @@ export default function Home() {
                       <div className="group bg-white/80 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-yellow-200/50 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:border-yellow-300/70 hover:-translate-y-0.5 sm:hover:-translate-y-1">
                         <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
                           <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-md sm:rounded-lg shadow-sm sm:shadow-md">
-                            <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 2C8 2 5 5.5 5 9.2c0 4.5 6.5 10.8 6.8 11.1a1 1 0 0 0 1.4 0C12.5 20 19 13.7 19 9.2 19 5.5 16 2 12 2z" fill="currentColor" />
-                              <circle cx="12" cy="9" r="2.2" fill="#fff" />
+                            {/* Taxi/car icon for Pickup (distinct from drop-off pin) */}
+                            <svg className="h-4 w-4 sm:h-5 sm:w-5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                              <path d="M3 13.5V11a1 1 0 0 1 1-1h1.2l1.2-2.5A2 2 0 0 1 8.5 6h7a2 2 0 0 1 1.1.5L18 10h1a1 1 0 0 1 1 1v2.5a1 1 0 0 1-1 1h-0.5a1.5 1.5 0 0 1-3 0H9a1.5 1.5 0 0 1-3 0H5a1 1 0 0 1-1-1z" fill="currentColor" />
+                              <circle cx="7.2" cy="15.5" r="0.9" fill="#ffffff" />
+                              <circle cx="16.8" cy="15.5" r="0.9" fill="#ffffff" />
                             </svg>
                           </div>
                           <span className="text-xs sm:text-sm font-bold text-yellow-700 uppercase tracking-wide">Pickup Location</span>
@@ -337,9 +339,12 @@ export default function Home() {
                       <div className="group bg-white/90 backdrop-blur-sm p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl border border-blue-200/50 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:border-blue-300/70 hover:-translate-y-0.5 sm:hover:-translate-y-1">
                         <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 lg:mb-4">
                           <div className="p-2 sm:p-3 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg sm:rounded-xl shadow-sm sm:shadow-md group-hover:scale-105 sm:group-hover:scale-110 transition-transform duration-300">
-                            <svg className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                              <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            {/* Car / route icon for Distance (distinct from the clock used for Duration) */}
+                            <svg className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                              <path d="M3 12l1-4.5a1 1 0 0 1 1-0.8h14a1 1 0 0 1 1 0.8L21 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M5 12v3a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                              <circle cx="7.5" cy="16.5" r="1" fill="currentColor" />
+                              <circle cx="16.5" cy="16.5" r="1" fill="currentColor" />
                             </svg>
                           </div>
                           <span className="text-xs sm:text-sm font-bold text-blue-700 uppercase tracking-wide">Distance</span>
@@ -412,6 +417,9 @@ Secure your fare today and enjoy reliable service with professional drivers. No 
             {isScotland && (
               <div className="mt-4 flex justify-center w-full">
                 <button 
+                onClick={
+                  () => window.open('https://www.dastaxis.co.uk/booking/', '_blank')
+                }
                 // onClick={handleBookingClick}
                  className="inline-flex w-full justify-center items-center gap-2 rounded-md bg-yellow-500 px-4 py-3 text-base font-semibold text-black hover:brightness-95 transition-all duration-200 hover:scale-105">
                   Book Now
