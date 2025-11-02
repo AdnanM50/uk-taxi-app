@@ -309,7 +309,7 @@ export default function Home() {
                               <circle cx="16.8" cy="15.5" r="0.9" fill="#ffffff" />
                             </svg>
                           </div>
-                          <span className="text-xs sm:text-sm font-bold text-yellow-700 uppercase tracking-wide">Pickup Location</span>
+                          <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Pickup Location</span>
                         </div>
                         <div className="text-gray-800 text-xs sm:text-sm font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
                           {response.start ?? startText}
@@ -325,7 +325,7 @@ export default function Home() {
                               <circle cx="12" cy="10" r="3" fill="#fff" />
                             </svg>
                           </div>
-                          <span className="text-xs sm:text-sm font-bold text-green-700 uppercase tracking-wide">Drop-off Location</span>
+                          <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Drop-off Location</span>
                         </div>
                         <div className="text-gray-800 text-xs sm:text-sm font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
                           {response.destination ?? destinationText}
@@ -347,9 +347,9 @@ export default function Home() {
                               <circle cx="16.5" cy="16.5" r="1" fill="currentColor" />
                             </svg>
                           </div>
-                          <span className="text-xs sm:text-sm font-bold text-blue-700 uppercase tracking-wide">Distance</span>
+                          <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Distance</span>
                         </div>
-                        <div className="text-gray-800 text-lg sm:text-xl lg:text-2xl font-black bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                        <div className="text-black text-lg sm:text-xl lg:text-2xl font-black">
                           {response.distance === '0.00 miles' || response.distance === '0 miles' || !response.distance ? 
                             'Same Location' : 
                             response.distance ?? '—'
@@ -366,9 +366,9 @@ export default function Home() {
                               <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                             </svg>
                           </div>
-                          <span className="text-xs sm:text-sm font-bold text-purple-700 uppercase tracking-wide">Duration</span>
+                          <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Duration</span>
                         </div>
-                        <div className="text-gray-800 text-lg sm:text-xl lg:text-2xl font-black bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+                        <div className="text-black text-lg sm:text-xl lg:text-2xl font-black">
                           {response.duration ?? '—'}
                         </div>
                       </div>
