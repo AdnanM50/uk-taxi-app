@@ -311,7 +311,7 @@ export default function Home() {
                           </div>
                           <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Pickup Location</span>
                         </div>
-                        <div className="text-gray-800 text-xs sm:text-sm font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
+                        <div className="text-gray-800 text-xs sm:text-base font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
                           {response.start ?? startText}
                         </div>
                       </div>
@@ -327,7 +327,7 @@ export default function Home() {
                           </div>
                           <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Drop-off Location</span>
                         </div>
-                        <div className="text-gray-800 text-xs sm:text-sm font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
+                        <div className="text-gray-800 text-xs sm:text-base font-medium leading-relaxed bg-gray-50/50 p-2 sm:p-3 rounded-md sm:rounded-lg border border-gray-100">
                           {response.destination ?? destinationText}
                         </div>
                       </div>
@@ -349,7 +349,7 @@ export default function Home() {
                           </div>
                           <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Distance</span>
                         </div>
-                        <div className="text-black text-lg sm:text-xl lg:text-2xl font-black">
+                        <div className="text-black text-lg sm:text-base font-medium">
                           {response.distance === '0.00 miles' || response.distance === '0 miles' || !response.distance ? 
                             'Same Location' : 
                             response.distance ?? '—'
@@ -368,7 +368,7 @@ export default function Home() {
                           </div>
                           <span className="text-xs sm:text-sm font-bold text-black uppercase tracking-wide">Duration</span>
                         </div>
-                        <div className="text-black text-lg sm:text-xl lg:text-2xl font-black">
+                        <div className="text-black text-lg sm:text-base font-medium">
                           {response.duration ?? '—'}
                         </div>
                       </div>
